@@ -37,6 +37,7 @@ SceWebKit_offsets_v365 = {
   SceWebKit_base_off: 0xabb63c,
   SceNet_stub_off: 0x85f3f4,
   SceLibc_stub_off: 0x85f4e4,
+  ScePsp2Compat_stub_off: 0x85d2c4,
   setscrollleft_off: 0x4e,
 }
 
@@ -44,6 +45,7 @@ SceWebKit_offsets_v367 = {
   SceWebKit_base_off: 0xabb654,
   SceNet_stub_off: 0x85f40c,
   SceLibc_stub_off: 0x85f4fc,
+  ScePsp2Compat_stub_off: 0x85d2dc,
   setscrollleft_off: 0x4e,
 }
 
@@ -51,6 +53,7 @@ SceWebKit_offsets_v368_v374 = {
   SceWebKit_base_off: 0xac3544,
   SceNet_stub_off: 0x866ab8,
   SceLibc_stub_off: 0x866ba8,
+  ScePsp2Compat_stub_off: 0x864988,
   setscrollleft_off: 0x4e,
 }
 
@@ -81,6 +84,22 @@ SceNet_functions_v365_v374 = {
 
 SceNet_offsets_v365_v374 = {
   SceNet_base_off: 0x23ed,
+}
+
+ScePsp2Compat_functions_v365 = {
+  sceAppMgrIsDevelopmentMode_imp: 0x2c60ec,
+}
+
+ScePsp2Compat_functions_v367 = {
+  sceAppMgrIsDevelopmentMode_imp: 0x2c92c4,
+}
+
+ScePsp2Compat_functions_v368_v374 = {
+  sceAppMgrIsDevelopmentMode_imp: 0x2c92d4,
+}
+
+ScePsp2Compat_offsets_v365_v374 = {
+  ScePsp2Compat_base_off: 0x22d65,
 }
 
 SceNetPs_gadgets_v365_v370 = {
@@ -141,6 +160,64 @@ SceNetPs_offsets_v371_v374 = {
   SceNetPs_base_off: -0x8d75,
 }
 
+SceNetPs_dev_gadgets_v365_v370 = {
+  blx_r0_pop_r3_pc: 0x2a1ab,
+  blx_r3_pop_r3_pc: 0x1959,
+  blx_r4_add_sp_c_pop_r4_r5_pc: 0xe3f1,
+
+  pop_pc: 0x1622f,
+  pop_r0_r1_r2_r3_r4_r6_pc: 0x2315d,
+  ldm_r0_r0_r1_r2_r3_r4_ip_sp_lr_pc: 0xb7c4,
+  ldr_r0_r4_pop_r4_pc: 0x2a82d,
+
+  str_r0_r4_pop_r4_pc: 0x169cf,
+
+  push_r3_r4_lr_pop_r0_r1_r2_r6_r0_r1_r3_r4_r5_r6_pc: 0x2b0f7,
+  add_r2_r4_pop_r4_r5_str_r2_r1_bx_lr: 0x24cab,
+  orrs_r0_r3_pop_r3_pc: 0x3c2f,
+  movs_r0_0_pop_r3_pc: 0xce5,
+
+  ksceKernelFreeMemBlock: 0x2a838,
+  ksceKernelGetMemBlockBase: 0x2a878,
+  ksceKernelMemcpyUserToKernel: 0x2a888,
+  ksceKernelAllocMemBlock: 0x2a8a8,
+
+  empty_string: 0x22,
+}
+
+SceNetPs_dev_gadgets_v371_v374 = {
+  blx_r0_pop_r3_pc: 0x2a1db,
+  blx_r3_pop_r3_pc: 0x1959,
+  blx_r4_add_sp_c_pop_r4_r5_pc: 0xe421,
+
+  pop_pc: 0x1625f,
+  pop_r0_r1_r2_r3_r4_r6_pc: 0x2318d,
+  ldm_r0_r0_r1_r2_r3_r4_ip_sp_lr_pc: 0xb7f4,
+  ldr_r0_r4_pop_r4_pc: 0x2a85d,
+
+  str_r0_r4_pop_r4_pc: 0x169ff,
+
+  push_r3_r4_lr_pop_r0_r1_r2_r6_r0_r1_r3_r4_r5_r6_pc: 0x2B127,
+  add_r2_r4_pop_r4_r5_str_r2_r1_bx_lr: 0x24cdb,
+  orrs_r0_r3_pop_r3_pc: 0x3c2f,
+  movs_r0_0_pop_r3_pc: 0xce5,
+
+  ksceKernelFreeMemBlock: 0x2a868,
+  ksceKernelGetMemBlockBase: 0x2a8a8,
+  ksceKernelMemcpyUserToKernel: 0x2a8b8,
+  ksceKernelAllocMemBlock: 0x2a8d8,
+
+  empty_string: 0x22,
+}
+
+SceNetPs_dev_offsets_v365_v370 = {
+  SceNetPs_base_off: -0x8d45,
+}
+
+SceNetPs_dev_offsets_v371_v374 = {
+  SceNetPs_base_off: -0x8d75,
+}
+
 SceSysmem_offsets_v365_v374 = {
   SceSysmem_base_off: -0x810b,
   ksceKernelRemapBlock: 0x7f69,
@@ -178,6 +255,10 @@ version_deps = {
       gadgets: SceNetPs_gadgets_v365_v370,
       offsets: SceNetPs_offsets_v365_v370,
     },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v365,
+      offsets: ScePsp2Compat_offsets_v365_v374
+    },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,
     },
@@ -199,6 +280,10 @@ version_deps = {
     "SceNetPs": {
       gadgets: SceNetPs_gadgets_v365_v370,
       offsets: SceNetPs_offsets_v365_v370,
+    },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v367,
+      offsets: ScePsp2Compat_offsets_v365_v374
     },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,
@@ -222,6 +307,10 @@ version_deps = {
       gadgets: SceNetPs_gadgets_v365_v370,
       offsets: SceNetPs_offsets_v365_v370,
     },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v368_v374,
+      offsets: ScePsp2Compat_offsets_v365_v374
+    },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,
     },
@@ -243,6 +332,10 @@ version_deps = {
     "SceNetPs": {
       gadgets: SceNetPs_gadgets_v365_v370,
       offsets: SceNetPs_offsets_v365_v370,
+    },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v368_v374,
+      offsets: ScePsp2Compat_offsets_v365_v374
     },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,
@@ -266,6 +359,10 @@ version_deps = {
       gadgets: SceNetPs_gadgets_v365_v370,
       offsets: SceNetPs_offsets_v365_v370,
     },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v368_v374,
+      offsets: ScePsp2Compat_offsets_v365_v374
+    },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,
     },
@@ -287,6 +384,10 @@ version_deps = {
     "SceNetPs": {
       gadgets: SceNetPs_gadgets_v371_v374,
       offsets: SceNetPs_offsets_v371_v374,
+    },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v368_v374,
+      offsets: ScePsp2Compat_offsets_v365_v374
     },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,
@@ -310,6 +411,10 @@ version_deps = {
       gadgets: SceNetPs_gadgets_v371_v374,
       offsets: SceNetPs_offsets_v371_v374,
     },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v368_v374,
+      offsets: ScePsp2Compat_offsets_v365_v374
+    },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,
     },
@@ -332,6 +437,10 @@ version_deps = {
       gadgets: SceNetPs_gadgets_v371_v374,
       offsets: SceNetPs_offsets_v371_v374,
     },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v368_v374,
+      offsets: ScePsp2Compat_offsets_v365_v374
+    },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,
     },
@@ -353,6 +462,10 @@ version_deps = {
     "SceNetPs": {
       gadgets: SceNetPs_gadgets_v371_v374,
       offsets: SceNetPs_offsets_v371_v374,
+    },
+    "ScePsp2Compat": {
+      functions: ScePsp2Compat_functions_v368_v374,
+      offsets: ScePsp2Compat_offsets_v365_v374
     },
     "SceSysmem": {
       offsets: SceSysmem_offsets_v365_v374,

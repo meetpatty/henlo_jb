@@ -263,6 +263,7 @@ static int (*ksceKernelStartThread)() = 0;
 static int (*ksceKernelExitDeleteThread)() = 0;
 static int (*ksceKernelGetMemBlockBase)(int uid, void **base) = 0;
 static int (*ksceKernelGetProcessInfo)(int pid, int *data) = 0;
+static int (*ksceSblACMgrIsDevelopmentMode)(void) = 0;
 
 // context for the hooks
 static unsigned g_homebrew_decrypt = 0;
@@ -788,7 +789,7 @@ void resolve_imports(unsigned sysmem_base) {
 	ret = ksceKernelGetModuleList(0x10005, 0x7FFFFFFF, 1, modlist, &modlist_records);
 	LOG("sceKernelGetModuleList() returned 0x%x", ret);
 	LOG("modlist_records: %d", modlist_records);
-	module_info_t *threadmgr_info = 0, *sblauthmgr_info = 0, *processmgr_info = 0, *display_info = 0, *iofilemgr_info = 0;
+	module_info_t *threadmgr_info = 0, *sblauthmgr_info = 0, *processmgr_info = 0, *display_info = 0, *iofilemgr_info = 0, *sblacmgr_info = 0;
 	u32_t modulemgr_data = 0;
 	for (int i = 0; i < modlist_records; ++i) {
 		info.size = sizeof(info);
@@ -821,9 +822,12 @@ void resolve_imports(unsigned sysmem_base) {
 		if (strcmp(info.name, "SceProcessmgr") == 0) {
 			processmgr_info = find_modinfo((u32_t)info.segments[0].vaddr, "SceProcessmgr");
 		}
+		if (strcmp(info.name, "SceSblACMgr") == 0) {
+			sblacmgr_info = find_modinfo((u32_t)info.segments[0].vaddr, "SceSblACMgr");
+		}
 	}
 
-	LOG("threadmgr_info: 0x%08x | sblauthmgr_info: 0x%08x | scenet_code: 0x%08x | scenet_data: 0x%08x | scenpdrm_info: 0x%08x", threadmgr_info, sblauthmgr_info, scenet_code, scenet_data, scenpdrm_info);
+	LOG("threadmgr_info: 0x%08x | sblauthmgr_info: 0x%08x | scenet_code: 0x%08x | scenet_data: 0x%08x | scenpdrm_info: 0x%08x | sblacmgr_info: 0x%08x", threadmgr_info, sblauthmgr_info, scenet_code, scenet_data, scenpdrm_info, sblacmgr_info);
 
 	DACR_OFF(
 		hook_resume_sbl_F3411881 = find_export(sblauthmgr_info, 0xF3411881);
@@ -849,6 +853,7 @@ void resolve_imports(unsigned sysmem_base) {
 		ksceKernelExitDeleteThread = find_export(threadmgr_info, 0x1D17DECF);
 		ksceKernelGetMemBlockBase = find_export(sysmem_info, 0xA841EDDA);
 		ksceKernelGetProcessInfo = find_export(processmgr_info, 0x0AFF3EAE);
+		ksceSblACMgrIsDevelopmentMode = find_export(sblacmgr_info, 0xE87D1777);
 		);
 
 	// BEGIN 3.63-3.74
@@ -885,19 +890,45 @@ typedef struct chunk_footer {
 void fix_netps_heap(uint32_t iflist_addr, uint32_t cur_fw) {
 
 	int new_fw = (cur_fw > 0x03700011);
+	int is_dev_mode = ksceSblACMgrIsDevelopmentMode();
 
-	// BEGIN 3.65-3.74
-	int (*getiflist)() = (void*)(scenet_code + 0x2fc1);
-	int (*free)() = (new_fw) ? (void*)(scenet_code + 0x5b05) : (void*)(scenet_code + 0x5b09);
-	int (*control)() = (new_fw) ? (void*)(scenet_code + 0x89ed) : (void*)(scenet_code + 0x89bd);
-	int (*ifunit)() = (new_fw) ? (void*)(scenet_code + 0xf865) : (void*)(scenet_code + 0xf835);
-	int (*if_clone_destroy)() = (new_fw) ? (void*)(scenet_code + 0xf935) : (void*)(scenet_code + 0xf905);
-	int (*in_control)() = (new_fw) ? (void*)(scenet_code + 0x1ac45) : (void*)(scenet_code + 0x1ac15);
-	int (*sce_psnet_bnet_mutex_unlock)() = (new_fw) ? (void*)(scenet_code + 0x2a41d) : (void*)(scenet_code + 0x2a3ed);
-	int (*sce_psnet_bnet_mutex_lock)() = (new_fw) ? (void*)(scenet_code + 0x2a385) : (void*)(scenet_code + 0x2a355);
-	void* global_mutex = (void*)((u32_t)scenet_data + 0x850);
-	void* heap_mutex = (void*)((u32_t)scenet_data + 0x88c);
-	// END 3.65-3.74
+	LOG("ksceSblACMgrIsDevelopmentMode() returned %d\n", is_dev_mode);
+
+	int (*getiflist)() = 0;
+	int (*free)() = 0;
+	int (*control)() = 0;
+	int (*ifunit)() = 0;
+	int (*if_clone_destroy)() = 0;
+	int (*in_control)() = 0;
+	int (*sce_psnet_bnet_mutex_unlock)() = 0;
+	int (*sce_psnet_bnet_mutex_lock)() = 0;
+	void* global_mutex = 0;
+	void* heap_mutex = 0;
+
+	if (is_dev_mode) {
+		free = (new_fw) ? (void*)(scenet_code + 0x5b05) : (void*)(scenet_code + 0x5b09);
+		control = (new_fw) ? (void*)(scenet_code + 0x89ed) : (void*)(scenet_code + 0x89bd);
+		ifunit = (new_fw) ? (void*)(scenet_code + 0xf8f5) : (void*)(scenet_code + 0xf8c5);
+		if_clone_destroy = (new_fw) ? (void*)(scenet_code + 0xf999) : (void*)(scenet_code + 0xf969);
+		in_control = (new_fw) ? (void*)(scenet_code + 0x1acd5) : (void*)(scenet_code + 0x1aca5);
+		sce_psnet_bnet_mutex_unlock = (new_fw) ? (void*)(scenet_code + 0x2a4ad) : (void*)(scenet_code + 0x2a47d);
+		sce_psnet_bnet_mutex_lock = (new_fw) ? (void*)(scenet_code + 0x2a415) : (void*)(scenet_code + 0x2a3e5);
+	}
+	else {
+		free = (new_fw) ? (void*)(scenet_code + 0x5b05) : (void*)(scenet_code + 0x5b09);
+		control = (new_fw) ? (void*)(scenet_code + 0x89ed) : (void*)(scenet_code + 0x89bd);
+		ifunit = (new_fw) ? (void*)(scenet_code + 0xf865) : (void*)(scenet_code + 0xf835);
+		if_clone_destroy = (new_fw) ? (void*)(scenet_code + 0xf935) : (void*)(scenet_code + 0xf905);
+		in_control = (new_fw) ? (void*)(scenet_code + 0x1ac45) : (void*)(scenet_code + 0x1ac15);
+		sce_psnet_bnet_mutex_unlock = (new_fw) ? (void*)(scenet_code + 0x2a41d) : (void*)(scenet_code + 0x2a3ed);
+		sce_psnet_bnet_mutex_lock = (new_fw) ? (void*)(scenet_code + 0x2a385) : (void*)(scenet_code + 0x2a355);
+		global_mutex = (void*)((u32_t)scenet_data + 0x850);
+		heap_mutex = (void*)((u32_t)scenet_data + 0x88c);
+	}
+
+	getiflist = (void*)(scenet_code + 0x2fc1);
+	global_mutex = (void*)((u32_t)scenet_data + 0x850);
+	heap_mutex = (void*)((u32_t)scenet_data + 0x88c);
 
 	sce_psnet_bnet_mutex_lock(heap_mutex, 0);
 
