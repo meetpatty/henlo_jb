@@ -141,6 +141,64 @@ SceNetPs_offsets_v371_v374 = {
   SceNetPs_base_off: -0x8d75,
 }
 
+SceNetPs_dev_gadgets_v365_v370 = {
+  blx_r0_pop_r3_pc: 0x2a1ab,
+  blx_r3_pop_r3_pc: 0x1959,
+  blx_r4_add_sp_c_pop_r4_r5_pc: 0xe3f1,
+
+  pop_pc: 0x1622f,
+  pop_r0_r1_r2_r3_r4_r6_pc: 0x2315d,
+  ldm_r0_r0_r1_r2_r3_r4_ip_sp_lr_pc: 0xb7c4,
+  ldr_r0_r4_pop_r4_pc: 0x2a82d,
+
+  str_r0_r4_pop_r4_pc: 0x169cf,
+
+  push_r3_r4_lr_pop_r0_r1_r2_r6_r0_r1_r3_r4_r5_r6_pc: 0x2b0f7,
+  add_r2_r4_pop_r4_r5_str_r2_r1_bx_lr: 0x24cab,
+  orrs_r0_r3_pop_r3_pc: 0x3c2f,
+  movs_r0_0_pop_r3_pc: 0xce5,
+
+  ksceKernelFreeMemBlock: 0x2a838,
+  ksceKernelGetMemBlockBase: 0x2a878,
+  ksceKernelMemcpyUserToKernel: 0x2a888,
+  ksceKernelAllocMemBlock: 0x2a8a8,
+
+  empty_string: 0x22,
+}
+
+SceNetPs_dev_gadgets_v371_v374 = {
+  blx_r0_pop_r3_pc: 0x2a1db,
+  blx_r3_pop_r3_pc: 0x1959,
+  blx_r4_add_sp_c_pop_r4_r5_pc: 0xe421,
+
+  pop_pc: 0x1625f,
+  pop_r0_r1_r2_r3_r4_r6_pc: 0x2318d,
+  ldm_r0_r0_r1_r2_r3_r4_ip_sp_lr_pc: 0xb7f4,
+  ldr_r0_r4_pop_r4_pc: 0x2a85d,
+
+  str_r0_r4_pop_r4_pc: 0x169ff,
+
+  push_r3_r4_lr_pop_r0_r1_r2_r6_r0_r1_r3_r4_r5_r6_pc: 0x2B127,
+  add_r2_r4_pop_r4_r5_str_r2_r1_bx_lr: 0x24cdb,
+  orrs_r0_r3_pop_r3_pc: 0x3c2f,
+  movs_r0_0_pop_r3_pc: 0xce5,
+
+  ksceKernelFreeMemBlock: 0x2a868,
+  ksceKernelGetMemBlockBase: 0x2a8a8,
+  ksceKernelMemcpyUserToKernel: 0x2a8b8,
+  ksceKernelAllocMemBlock: 0x2a8d8,
+
+  empty_string: 0x22,
+}
+
+SceNetPs_dev_offsets_v365_v370 = {
+  SceNetPs_base_off: -0x8d45,
+}
+
+SceNetPs_dev_offsets_v371_v374 = {
+  SceNetPs_base_off: -0x8d75,
+}
+
 SceSysmem_offsets_v365_v374 = {
   SceSysmem_base_off: -0x810b,
   ksceKernelRemapBlock: 0x7f69,
@@ -359,3 +417,18 @@ version_deps = {
     },
   },
 };
+
+if (getMode() === 'development') {
+  const old_fw_vers = [0x03650011, 0x03670011, 0x03680011, 0x03690011, 0x03700011];
+  const new_fw_vers = [0x03710011, 0x03720011, 0x03730011, 0x03740011];
+
+  for (var i = 0; i < old_fw_vers.length; i++) {
+    version_deps[old_fw_vers[i]].SceNetPs.gadgets = SceNetPs_dev_gadgets_v365_v370;
+    version_deps[old_fw_vers[i]].SceNetPs.offsets = SceNetPs_dev_offsets_v365_v370;
+  }
+
+  for (var i = 0; i < new_fw_vers.length; i++) {
+    version_deps[new_fw_vers[i]].SceNetPs.gadgets = SceNetPs_dev_gadgets_v371_v374;
+    version_deps[new_fw_vers[i]].SceNetPs.offsets = SceNetPs_dev_offsets_v371_v374;
+  }
+}

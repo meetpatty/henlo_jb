@@ -1,4 +1,5 @@
 <!-- henlo frontend by Freakler -->
+<script src="utils.js"></script>
 <html>
 	<head>
 		<title>HENlo - Homebrew Enabler</title>
@@ -404,7 +405,7 @@
 				<!-- Buttons -->
 				<div class="buttonarea">
 					<button style="float:left;" class="button" onclick="pagescroll('page_hen','page_welcome')">Cancel</button>
-					<button style="float:right;" class="button" onclick="location.href = 'go'">Unlock</button>
+					<button style="float:right;" class="button" onclick="location.href = 'go?mode=' + getMode()">Unlock</button>
 				</div>
 			</div>
 			
