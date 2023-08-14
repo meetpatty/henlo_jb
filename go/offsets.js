@@ -418,7 +418,8 @@ version_deps = {
   },
 };
 
-if (getMode() === 'development') {
+function update_for_dev_mode()
+{
   const old_fw_vers = [0x03650011, 0x03670011, 0x03680011, 0x03690011, 0x03700011];
   const new_fw_vers = [0x03710011, 0x03720011, 0x03730011, 0x03740011];
 
