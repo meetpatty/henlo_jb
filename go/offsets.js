@@ -418,6 +418,14 @@ version_deps = {
   },
 };
 
+webkit_dev_fingerprint_offsets = {
+  0x03650011 : 0x25bb24,
+  0x03670011 : 0x25bb24,
+  0x03680011 : 0x25bb24,
+  0x03710011 : 0x25c368,
+  0x03730011 : 0x25c368,
+}
+
 function update_for_dev_mode()
 {
   const old_fw_vers = [0x03650011, 0x03670011, 0x03680011, 0x03690011, 0x03700011];
