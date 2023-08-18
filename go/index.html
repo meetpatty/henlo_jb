@@ -1,58 +1,15 @@
 <html>
-
-<head>
-	<link rel="stylesheet" href="../site.css">
-
-	<title>HENlo - Homebrew Enabler</title>
-
-	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
-</head>
-
 <body>
-	<script src="../utils.js"></script>
-	<script src="exploit.js"></script>
-	<script src="kernel.js"></script>
-	<script src="jsos.js"></script>
-	<script src="offsets.js"></script>
+<script src="exploit.js"></script>
+<script src="kernel.js"></script>
+<script src="jsos.js"></script>
+<script src="offsets.js"></script>
 
-	<script type="text/javascript">
-		hideBar(); // to hide the address bar keep scrolling automatically
-
-		window.onload = function () {
-			go();
-		}
-	</script>
-
-	<center>
-
-		<img src="../watermark.png" width="400px"
-			style="position:absolute; right:0%; bottom:0%; opacity:0.06; z-index:-1;">
-
-
-		<!-- WELCOME ------------------------------------------------------------------------------------------------------------------------>
-		<div id="page_select_mode" style="display:none;">
-			<!-- Headline & Logo ------------------------------------------------------->
-			<p class="headertext">HENlo - Select DevKit Release Check Mode</p>
-			<hr class="line_top">
-			<hr class="line_bot">
-			<p style="margin-top:8px; font-size:25px;"><!--for PlayStation Vita & PlayStation TV--></p>
-			<!-- &#9733;  -->
-
-			<!-- Content -------------------------------------------------------------------->
-			<div class="contentcontainer">
-				<br>
-				<p>You appear to be using a DevKit.<br>Please select the correct Release Check Mode.</p>
-				<p>The current mode can be seen in:<br>Debug Settings -> Boot Parameters.</p>
-			</div>
-
-			<!-- Buttons -------------------------------------------------------------------->
-			<div class="buttonarea">
-				<button id="release_btn" class="button" style="min-width: 267px;">Release</button>
-				<button id="development_btn" class="button" style="min-width: 267px;">Development</button>
-			</div>
-		</div>
-
-	</center>
+<script type="text/javascript">
+window.onload = function() {
+  go();
+}
+</script>
 
 </body>
 </html>
