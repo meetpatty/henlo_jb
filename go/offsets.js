@@ -472,19 +472,3 @@ version_deps = {
     },
   },
 };
-
-function update_for_dev_mode()
-{
-  const old_fw_vers = [0x03650011, 0x03670011, 0x03680011, 0x03690011, 0x03700011];
-  const new_fw_vers = [0x03710011, 0x03720011, 0x03730011, 0x03740011];
-
-  for (var i = 0; i < old_fw_vers.length; i++) {
-    version_deps[old_fw_vers[i]].SceNetPs.gadgets = SceNetPs_dev_gadgets_v365_v370;
-    version_deps[old_fw_vers[i]].SceNetPs.offsets = SceNetPs_dev_offsets_v365_v370;
-  }
-
-  for (var i = 0; i < new_fw_vers.length; i++) {
-    version_deps[new_fw_vers[i]].SceNetPs.gadgets = SceNetPs_dev_gadgets_v371_v374;
-    version_deps[new_fw_vers[i]].SceNetPs.offsets = SceNetPs_dev_offsets_v371_v374;
-  }
-}
