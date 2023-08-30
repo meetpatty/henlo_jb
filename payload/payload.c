@@ -905,9 +905,13 @@ void fix_netps_heap(uint32_t iflist_addr, uint32_t cur_fw) {
 	void* global_mutex = 0;
 	void* heap_mutex = 0;
 
+	getiflist = (void*)(scenet_code + 0x2fc1);
+	free = (new_fw) ? (void*)(scenet_code + 0x5b05) : (void*)(scenet_code + 0x5b09);
+	control = (new_fw) ? (void*)(scenet_code + 0x89ed) : (void*)(scenet_code + 0x89bd);
+	global_mutex = (void*)((u32_t)scenet_data + 0x850);
+	heap_mutex = (void*)((u32_t)scenet_data + 0x88c);
+
 	if (is_dev_mode) {
-		free = (new_fw) ? (void*)(scenet_code + 0x5b05) : (void*)(scenet_code + 0x5b09);
-		control = (new_fw) ? (void*)(scenet_code + 0x89ed) : (void*)(scenet_code + 0x89bd);
 		ifunit = (new_fw) ? (void*)(scenet_code + 0xf8f5) : (void*)(scenet_code + 0xf8c5);
 		if_clone_destroy = (new_fw) ? (void*)(scenet_code + 0xf999) : (void*)(scenet_code + 0xf969);
 		in_control = (new_fw) ? (void*)(scenet_code + 0x1acd5) : (void*)(scenet_code + 0x1aca5);
@@ -915,20 +919,12 @@ void fix_netps_heap(uint32_t iflist_addr, uint32_t cur_fw) {
 		sce_psnet_bnet_mutex_lock = (new_fw) ? (void*)(scenet_code + 0x2a415) : (void*)(scenet_code + 0x2a3e5);
 	}
 	else {
-		free = (new_fw) ? (void*)(scenet_code + 0x5b05) : (void*)(scenet_code + 0x5b09);
-		control = (new_fw) ? (void*)(scenet_code + 0x89ed) : (void*)(scenet_code + 0x89bd);
 		ifunit = (new_fw) ? (void*)(scenet_code + 0xf865) : (void*)(scenet_code + 0xf835);
 		if_clone_destroy = (new_fw) ? (void*)(scenet_code + 0xf935) : (void*)(scenet_code + 0xf905);
 		in_control = (new_fw) ? (void*)(scenet_code + 0x1ac45) : (void*)(scenet_code + 0x1ac15);
 		sce_psnet_bnet_mutex_unlock = (new_fw) ? (void*)(scenet_code + 0x2a41d) : (void*)(scenet_code + 0x2a3ed);
 		sce_psnet_bnet_mutex_lock = (new_fw) ? (void*)(scenet_code + 0x2a385) : (void*)(scenet_code + 0x2a355);
-		global_mutex = (void*)((u32_t)scenet_data + 0x850);
-		heap_mutex = (void*)((u32_t)scenet_data + 0x88c);
 	}
-
-	getiflist = (void*)(scenet_code + 0x2fc1);
-	global_mutex = (void*)((u32_t)scenet_data + 0x850);
-	heap_mutex = (void*)((u32_t)scenet_data + 0x88c);
 
 	sce_psnet_bnet_mutex_lock(heap_mutex, 0);
 
